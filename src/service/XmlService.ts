@@ -1,1 +1,1 @@
-abstract class XmlService {}
+abstract class XmlService { }

@@ -90,4 +90,8 @@ typings/
 
 # wechaty
 dist
+files
 *.memory-card.json
+
+# private
+private_config.json

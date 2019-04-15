@@ -2,41 +2,63 @@ import WechatyBot from '../bot';
 import { Message, log } from 'wechaty';
 
 export interface ServiceFunc {
-  (context: ServiceContext): void | Promise<any>;
+  (context: ServiceContext, next: () => void): void | Promise<any>;
 }
 
 export interface ServiceContext {
   Bot: WechatyBot;
-  message: Message;
-  options?: object;
+  message: Message | null;
+  options: ServiceOptions;
 }
 
-class BotTextService {
+export interface ServiceOptions {
+  isAdmin?: boolean;
+  isXiaobing?: boolean;
+  parsedText?: string;
+}
+
+class MessageService {
   private _services: Array<ServiceFunc>;
+  private _srv?: Array<ServiceFunc>;
   private _bot: WechatyBot;
+  private _context?: ServiceContext;
+  private _message?: Message;
 
   constructor() {
     this._services = [];
     this._bot = WechatyBot.Instance;
   }
 
-  add(service: ServiceFunc): void {
+  use(service: ServiceFunc): void {
     this._services.push(service);
   }
 
-  async parse(message: Message) {
-    let context: ServiceContext = {
+  next() {
+    // log.info('next');
+    if (this._srv && this._srv.length > 0) {
+      let ware = this._srv.shift();
+      if (ware) {
+        ware.call(this, this._context || {
+          Bot: this._bot,
+          message: this._message || null,
+          options: {}
+        }, this.next.bind(this))
+      }
+    }
+  }
+
+  parse(message: Message) {
+    // log.info('Begin parse');
+    this._srv = this._services.slice(0);
+    this._message = message;
+    this._context = {
       Bot: this._bot,
-      message
+      message,
+      options: {}
     };
 
-    for (var k in this._services) {
-      let foo = this._services[k];
-      await foo.call(null, context);
-    }
-
-    log.info('Parse end!');
+    this.next();
   }
 }
 
-export default BotTextService;
+export default MessageService;
