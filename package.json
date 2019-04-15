@@ -1,0 +1,31 @@
+{
+    "name": "wechaty-bot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "node dist/src/index"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/lru-cache": "^5.1.0",
+        "@types/node": "^11.13.4",
+        "@types/puppeteer": "^1.12.3",
+        "@types/raven": "^2.5.3",
+        "shx": "^0.3.2",
+        "typescript": "^3.4.3"
+    },
+    "dependencies": {
+        "@types/lodash": "^4.14.123",
+        "@types/lodash.get": "^4.4.6",
+        "axios": "^0.18.0",
+        "lodash": "^4.17.11",
+        "lodash.get": "^4.4.2",
+        "lru-cache": "^5.1.1",
+        "qrcode-terminal": "^0.12.0",
+        "wechaty": "^0.25.3",
+        "wechaty-puppet-puppeteer": "^0.15.4"
+    }
+}
