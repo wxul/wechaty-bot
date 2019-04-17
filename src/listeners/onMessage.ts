@@ -1,23 +1,29 @@
 import { Message, log } from 'wechaty';
 import { MessageType } from 'wechaty-puppet';
-import { isAdmin, isXiaobing, forwardToAdmins } from '../utils';
+import { isAdmin, isXiaobing, forwardToAdmins, getMessageFromContactName } from '../utils';
 import Service from '../service/Service';
 import RecallSrv from '../service/srv/recall';
 import PreSrv from '../service/srv/pre';
 import { xiaobingCallback, defaultSrv } from '../service/srv/xiaobing';
+import TestSrc from '../service/srv/test';
 
 const service = new Service();
 service.use(RecallSrv);
 service.use(PreSrv);
+
+if (process.env.DEBUG) {
+  service.use(TestSrc);
+}
+
 service.use(xiaobingCallback);
 
 service.use(defaultSrv);
 
 export default async function onMessage(message: Message) {
   try {
-    const from = message.from();
     const type = message.type();
-    log.info('Message', 'id: %s, type: %s, from: %s', message.id, MessageType[type], from ? from.name() : 'none');
+    const fromUserName = (await getMessageFromContactName(message)) || 'no';
+    log.info('Message', 'id: %s, type: %s, from: %s', message.id, MessageType[type], fromUserName);
 
     service.parse(message);
 

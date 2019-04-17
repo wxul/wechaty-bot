@@ -1,5 +1,8 @@
-import { Message } from "wechaty";
-import { resolve } from 'path';
+import { Message, FileBox, log } from 'wechaty';
+import { resolve, format } from 'path';
+import { FilePath } from './config';
+import fs from 'fs';
+import moment from 'moment';
 import WechatyBot from '../bot';
 
 const config = require(resolve(__dirname, '../../private_config.json'));
@@ -19,12 +22,12 @@ async function getContact(nameList: string[]) {
 
   return all.filter(contact => {
     return config.admins.indexOf(contact.name()) > -1;
-  })
+  });
 }
 
 /**
  * 消息是否来自管理员
- * @param message 
+ * @param message
  */
 export function isAdmin(message: Message) {
   return isEqualContact(message, config.admins);
@@ -32,7 +35,7 @@ export function isAdmin(message: Message) {
 
 /**
  * 消息是否来自微软小冰
- * @param message 
+ * @param message
  */
 export function isXiaobing(message: Message) {
   return isEqualContact(message, ['小冰']);
@@ -52,13 +55,13 @@ export async function getXiaobing() {
   let bot = WechatyBot.Instance;
   let contacts = await bot.Contact.find({
     name: '小冰'
-  })
+  });
   return contacts;
 }
 
 /**
  * 群发管理员
- * @param content 
+ * @param content
  */
 export async function sayToAdmins(content: any) {
   let admins = await getAdmins();
@@ -69,11 +72,61 @@ export async function sayToAdmins(content: any) {
 
 /**
  * 群转发管理员
- * @param message 
+ * @param message
  */
 export async function forwardToAdmins(message: Message) {
   let admins = await getAdmins();
   admins.forEach(async a => {
     await message.forward(a);
   });
+}
+
+/**
+ * 保存消息中的文件
+ * @param message
+ */
+export async function saveFile(message: Message) {
+  if (!fs.existsSync(FilePath)) {
+    fs.mkdirSync(FilePath);
+  }
+
+  try {
+    const file = await message.toFileBox();
+    const contact = message.from();
+    const room = message.room();
+    const date = message.date();
+    let name = file.name;
+    if (contact) {
+      name = contact.name() + '_' + name;
+    }
+    if (room) {
+      let topic = await room.topic();
+      name = topic + '_' + name;
+    }
+    name = moment(date).format('YYYY_MM_DD_HH_mm_ss') + '_' + name;
+    log.info('SaveFile', 'path: %s', name);
+    let filepath = resolve(FilePath, name);
+    await file.toFile(filepath);
+    return filepath;
+  } catch (error) {
+    log.error('SaveFile Error', error.message);
+  }
+}
+
+/**
+ * 获取消息来源用户名称
+ * @param message 
+ */
+export async function getMessageFromContactName(message: Message) {
+  const contact = message.from();
+  if (!contact) return null;
+  const room = message.room();
+  let userName;
+  if (room) {
+    userName = await room.alias(contact);
+    console.log('find alias in room', userName);
+  }
+  userName = userName || contact.name() || contact.weixin();
+
+  return userName;
 }
