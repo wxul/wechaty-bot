@@ -85,7 +85,7 @@ export async function forwardToAdmins(message: Message) {
  * 保存消息中的文件
  * @param message
  */
-export async function saveFile(message: Message) {
+export async function saveFile(message: Message, filename?: string) {
   if (!fs.existsSync(FilePath)) {
     fs.mkdirSync(FilePath);
   }
@@ -115,7 +115,7 @@ export async function saveFile(message: Message) {
 
 /**
  * 获取消息来源用户名称
- * @param message 
+ * @param message
  */
 export async function getMessageFromContactName(message: Message) {
   const contact = message.from();
@@ -124,7 +124,6 @@ export async function getMessageFromContactName(message: Message) {
   let userName;
   if (room) {
     userName = await room.alias(contact);
-    console.log('find alias in room', userName);
   }
   userName = userName || contact.name() || contact.weixin();
 
