@@ -5,7 +5,8 @@ import fs from 'fs';
 import moment from 'moment';
 import WechatyBot from '../bot';
 
-const config = require(resolve(__dirname, '../../private_config.json'));
+const { ROOT_DIR } = process.env;
+const config = ROOT_DIR ? require(resolve(ROOT_DIR, 'private_config.json')) : require(resolve(__dirname, '../../private_config.json'));
 
 function isEqualContact(message: Message, nameList: string[]) {
   let from = message.from();

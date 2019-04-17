@@ -5,10 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dist": "shx rm -rf dist/ && tsc && shx cp private_config.json dist/",
-    "dev": "shx cp private_config.json dist/ && node dist/src/index",
+    "dist": "shx rm -rf dist/ && tsc",
+    "dev": "ROOT_DIR=`pwd` node dist/src/index",
     "dev:debug": "DEBUG=true npm run dev",
-    "start": "npm run dist && pm2 startOrRestart --env production"
+    "start": "pm2 startOrRestart --env production"
   },
   "author": "",
   "license": "ISC",
