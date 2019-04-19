@@ -5,21 +5,23 @@ import merge from 'lodash/fp/merge';
 const DEFAULT_CONFIG: AxiosRequestConfig = {
   timeout: 2000,
   headers: { 'Content-Type': 'application/json' },
-//   withCredentials: true,
+  //   withCredentials: true,
   validateStatus: status => {
     return status >= 200 && status < 500;
   }
 };
 
 class Axios {
-  private api: AxiosInstance;
+  private static api: AxiosInstance;
 
-  constructor(config: AxiosRequestConfig = DEFAULT_CONFIG) {
+  private constructor() {}
+
+  private static create(config: AxiosRequestConfig = DEFAULT_CONFIG) {
     let c = merge(DEFAULT_CONFIG, config);
 
-    this.api = axios.create(c);
+    Axios.api = axios.create(c);
 
-    this.api.interceptors.response.use(
+    Axios.api.interceptors.response.use(
       function(response) {
         if (response.status >= 400) {
           return null;
@@ -38,8 +40,11 @@ class Axios {
     );
   }
 
-  getAxiosInstance(): AxiosInstance {
-    return this.api;
+  public static getAxiosInstance(): AxiosInstance {
+    if (!Axios.api) {
+      Axios.create();
+    }
+    return Axios.api;
   }
 }
 

@@ -5,17 +5,19 @@ import Service from '../service/Service';
 import RecallSrv from '../service/srv/recall';
 import PreSrv from '../service/srv/pre';
 import { xiaobingCallback, defaultSrv } from '../service/srv/xiaobing';
-import TestSrc from '../service/srv/test';
+import TestSrv from '../service/srv/test';
+import KeySrv from '../service/srv/key';
 
 const service = new Service();
 service.use(RecallSrv);
 service.use(PreSrv);
 
 if (process.env.DEBUG) {
-  service.use(TestSrc);
+  service.use(TestSrv);
 }
 
 service.use(xiaobingCallback);
+service.use(KeySrv);
 
 service.use(defaultSrv);
 

@@ -130,3 +130,21 @@ export async function getMessageFromContactName(message: Message) {
 
   return userName;
 }
+
+export interface NewsItem {
+  title: string;
+  url: string;
+}
+
+export interface News {
+  name: string;
+  items: NewsItem[];
+}
+
+export function newsFormat(news: News): string {
+  let result = `${news.name}: \r\n`;
+  news.items.forEach(item => {
+    result += `${item.title}\r\n${item.url}\r\n`;
+  });
+  return result;
+}
