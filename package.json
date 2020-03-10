@@ -8,28 +8,30 @@
     "dist": "shx rm -rf dist/ && tsc",
     "dev": "ROOT_DIR=`pwd` node dist/src/index",
     "dev:debug": "DEBUG=true npm run dev",
-    "start": "pm2 startOrRestart --env production"
+    "start": "cross-env NODE_ENV=production ts-node src/index.ts",
+    "start:pm2": "pm2 startOrRestart --env production"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/lodash": "^4.14.123",
+    "@types/lodash": "^4.14.149",
     "@types/lodash.get": "^4.4.6",
     "@types/lru-cache": "^5.1.0",
-    "@types/node": "^11.13.4",
-    "@types/puppeteer": "^1.12.3",
+    "@types/node": "^13.9.0",
+    "@types/puppeteer": "^2.0.1",
     "@types/raven": "^2.5.3",
     "shx": "^0.3.2",
-    "typescript": "^3.4.3"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
-    "axios": "^0.18.0",
-    "lodash": "^4.17.11",
+    "axios": "^0.19.2",
+    "cross-env": "^7.0.2",
+    "lodash": "^4.17.15",
     "lodash.get": "^4.4.2",
     "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
     "qrcode-terminal": "^0.12.0",
-    "wechaty": "^0.25.3",
-    "wechaty-puppet-puppeteer": "git+https://github.com/wxul/wechaty-puppet-puppeteer.git#release"
+    "ts-node": "^8.6.2",
+    "wechaty": "^0.32.5"
   }
 }

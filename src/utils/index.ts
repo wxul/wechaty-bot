@@ -1,12 +1,14 @@
-import { Message, FileBox, log } from 'wechaty';
-import { resolve, format } from 'path';
-import { FilePath } from './config';
-import fs from 'fs';
-import moment from 'moment';
-import WechatyBot from '../bot';
+import { Message, FileBox, log } from "wechaty";
+import { resolve, format } from "path";
+import { FilePath } from "./config";
+import fs from "fs";
+import moment from "moment";
+import WechatyBot from "../bot";
 
 const { ROOT_DIR } = process.env;
-const config = ROOT_DIR ? require(resolve(ROOT_DIR, 'private_config.json')) : require(resolve(__dirname, '../../private_config.json'));
+const config = ROOT_DIR
+  ? require(resolve(ROOT_DIR, "private_config.json"))
+  : require(resolve(__dirname, "../../private_config.json"));
 
 function isEqualContact(message: Message, nameList: string[]) {
   let from = message.from();
@@ -39,7 +41,7 @@ export function isAdmin(message: Message) {
  * @param message
  */
 export function isXiaobing(message: Message) {
-  return isEqualContact(message, ['小冰']);
+  return isEqualContact(message, ["小冰"]);
 }
 
 /**
@@ -55,7 +57,7 @@ export async function getAdmins() {
 export async function getXiaobing() {
   let bot = WechatyBot.Instance;
   let contacts = await bot.Contact.find({
-    name: '小冰'
+    name: "小冰"
   });
   return contacts;
 }
@@ -98,19 +100,19 @@ export async function saveFile(message: Message, filename?: string) {
     const date = message.date();
     let name = file.name;
     if (contact) {
-      name = contact.name() + '_' + name;
+      name = contact.name() + "_" + name;
     }
     if (room) {
       let topic = await room.topic();
-      name = topic + '_' + name;
+      name = topic + "_" + name;
     }
-    name = moment(date).format('YYYY_MM_DD_HH_mm_ss') + '_' + name;
-    log.info('SaveFile', 'path: %s', name);
+    name = moment(date).format("YYYY_MM_DD_HH_mm_ss") + "_" + name;
+    log.info("SaveFile", "path: %s", name);
     let filepath = resolve(FilePath, name);
     await file.toFile(filepath);
     return filepath;
   } catch (error) {
-    log.error('SaveFile Error', error.message);
+    log.error("SaveFile Error", error.message);
   }
 }
 
@@ -147,4 +149,18 @@ export function newsFormat(news: News): string {
     result += `${item.title}\r\n${item.url}\r\n`;
   });
   return result;
+}
+
+/**
+ * 概率执行方法
+ * @param probNum 概率，0-1之间的小数
+ * @param func
+ * @param args
+ */
+export function prob(probNum: number, func: Function): Function {
+  return function(...args: any[]) {
+    if (Math.random() < probNum) {
+      func.call(null, ...args);
+    }
+  };
 }

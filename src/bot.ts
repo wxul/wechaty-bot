@@ -1,5 +1,4 @@
-import { Wechaty } from 'wechaty';
-import { PuppetPuppeteer } from 'wechaty-puppet-puppeteer';
+import { Wechaty } from "wechaty";
 
 class WechatyBot {
   private static _bot: Wechaty;
@@ -8,8 +7,7 @@ class WechatyBot {
   static get Instance(): Wechaty {
     if (!WechatyBot._bot)
       WechatyBot._bot = Wechaty.instance({
-        profile: 'default',
-        puppet: new PuppetPuppeteer()
+        name: "wx-bot"
       });
     return WechatyBot._bot;
   }
