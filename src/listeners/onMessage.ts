@@ -27,9 +27,9 @@ if (process.env.DEBUG) {
 
 // service.use(xiaobingCallback);
 // service.use(KeySrv);
-service.use(sensitiveSrv);
+// service.use(sensitiveSrv);
 // service.use(defaultSrv);
-service.use(repeatSrv);
+// service.use(repeatSrv);
 
 log.info("Init", "初始化敏感词库...");
 SensitiveWordInstance.buildMapFromFile(join(__dirname, "../../敏感词"));
